@@ -39,4 +39,14 @@ public class TarefasController {
         }
         return ResponseEntity.status(HttpStatus.OK).body(tarefasRepository.findById(id));
     }
+    @PutMapping("/tarefas/{id}")
+    public  ResponseEntity<Object> updateTarefas(@PathVariable(name = "id")Long id,@RequestBody @Valid TarefasDTO tarefasDTO){
+        Optional<TarefasModel> tarefas0 = tarefasRepository.findById(id);
+        if (tarefas0.isEmpty()){
+            ResponseEntity.status(HttpStatus.NOT_FOUND).body("tarefa não encotrada");
+        }
+        var TarefasModel = tarefas0.get();
+        BeanUtils.copyProperties(tarefasDTO,TarefasModel);
+        return  ResponseEntity.status(HttpStatus.OK).body(tarefasRepository.save(TarefasModel));
+    }
 }
