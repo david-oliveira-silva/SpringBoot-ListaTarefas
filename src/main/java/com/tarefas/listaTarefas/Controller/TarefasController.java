@@ -4,6 +4,7 @@ import com.tarefas.listaTarefas.DTO.TarefasDTO;
 import com.tarefas.listaTarefas.Models.TarefasModel;
 import com.tarefas.listaTarefas.Repository.TarefasRepository;
 import jakarta.validation.Valid;
+import org.aspectj.weaver.ast.Var;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -48,5 +49,16 @@ public class TarefasController {
         var TarefasModel = tarefas0.get();
         BeanUtils.copyProperties(tarefasDTO,TarefasModel);
         return  ResponseEntity.status(HttpStatus.OK).body(tarefasRepository.save(TarefasModel));
+    }
+    @DeleteMapping("/tarefas/{id}")
+    public ResponseEntity<Object> deleteTarefas(@PathVariable(name = "id")Long id){
+        Optional<TarefasModel>tarefa0 = tarefasRepository.findById(id);
+        if (tarefa0.isEmpty()){
+            ResponseEntity.status(HttpStatus.NOT_FOUND).body("Tarefa não encontrada");
+        }
+        var tarefasModels = tarefa0.get();
+        tarefasRepository.delete(tarefasModels);
+
+        return ResponseEntity.status(HttpStatus.OK).body("Tarefa deletada");
     }
 }
